@@ -41,6 +41,9 @@ const Navbar = () => {
                 <button type="button" onClick={() => go('/trips')}>My trips</button>
                 <button type="button" onClick={() => go('/host/dashboard')}>Host dashboard</button>
                 <button type="button" onClick={() => go('/host/listings/new')}>Create listing</button>
+                {user.role === 'admin' && (
+                  <button type="button" onClick={() => go('/admin')}>Admin</button>
+                )}
                 <hr />
                 <button
                   type="button"

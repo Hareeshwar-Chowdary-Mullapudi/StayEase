@@ -1,7 +1,8 @@
 import { Route, Routes } from 'react-router-dom'
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
-import ProtectedRoute from './components/ProtectedRoute'
+import { AdminRoute, ProtectedRoute } from './components/ProtectedRoute'
+import AdminUsers from './pages/AdminUsers'
 import ConfirmStay from './pages/ConfirmStay'
 import Home from './pages/Home'
 import HostBookings from './pages/HostBookings'
@@ -37,8 +38,11 @@ const App = () => (
           <Route path="/host/dashboard" element={<HostDashboard />} />
           <Route path="/host/bookings" element={<HostBookings />} />
           <Route path="/host/listings/new" element={<CreateListing />} />
-          <Route path="/host/listings/:id/edit" element={<EditListing />} />
-        </Route>
+            <Route path="/host/listings/:id/edit" element={<EditListing />} />
+          </Route>
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<AdminUsers />} />
+          </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </main>

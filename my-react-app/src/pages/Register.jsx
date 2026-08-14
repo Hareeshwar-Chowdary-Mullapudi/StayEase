@@ -1,97 +1,46 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const Register = () => {
-  const navigate = useNavigate()
   const { register } = useAuth()
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: 'guest',
-  })
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ name: '', email: '', password: '' })
   const [error, setError] = useState('')
-  const [submitting, setSubmitting] = useState(false)
 
-  const handleChange = (event) => {
-    setFormData((current) => ({
-      ...current,
-      [event.target.name]: event.target.value,
-    }))
-  }
-
-  const handleSubmit = async (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault()
     setError('')
-    setSubmitting(true)
-
     try {
-      await register(formData)
+      await register(form)
       navigate('/')
     } catch (err) {
-      setError(err.response?.data?.message || 'Unable to create account')
-    } finally {
-      setSubmitting(false)
+      setError(err.response?.data?.message || 'Unable to register')
     }
   }
 
   return (
-    <section className="auth-card">
+    <section className="panel">
       <h1>Create account</h1>
-      <p>Join as a guest or host to start using the marketplace.</p>
-
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onSubmit}>
         <label>
           Name
-          <input
-            name="name"
-            type="text"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
+          <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
         </label>
-
         <label>
           Email
-          <input
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+          <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
         </label>
-
         <label>
           Password
-          <input
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            minLength="6"
-            required
-          />
+          <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
         </label>
-
-        <label>
-          Account type
-          <select name="role" value={formData.role} onChange={handleChange}>
-            <option value="guest">Guest</option>
-            <option value="host">Host</option>
-          </select>
-        </label>
-
-        {error && <p className="error-message">{error}</p>}
-
-        <button className="button primary full-width" type="submit" disabled={submitting}>
-          {submitting ? 'Creating account...' : 'Create account'}
+        {error && <p className="error">{error}</p>}
+        <button className="btn" type="submit">
+          Register
         </button>
       </form>
-
-      <p className="auth-footer">
+      <p className="muted">
         Already have an account? <Link to="/login">Login</Link>
       </p>
     </section>

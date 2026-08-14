@@ -1,75 +1,42 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const Login = () => {
-  const navigate = useNavigate()
   const { login } = useAuth()
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  })
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
-  const [submitting, setSubmitting] = useState(false)
 
-  const handleChange = (event) => {
-    setFormData((current) => ({
-      ...current,
-      [event.target.name]: event.target.value,
-    }))
-  }
-
-  const handleSubmit = async (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault()
     setError('')
-    setSubmitting(true)
-
     try {
-      await login(formData)
+      await login(form)
       navigate('/')
     } catch (err) {
       setError(err.response?.data?.message || 'Unable to login')
-    } finally {
-      setSubmitting(false)
     }
   }
 
   return (
-    <section className="auth-card">
+    <section className="panel">
       <h1>Login</h1>
-      <p>Welcome back. Enter your details to continue.</p>
-
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onSubmit}>
         <label>
           Email
-          <input
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+          <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
         </label>
-
         <label>
           Password
-          <input
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
         </label>
-
-        {error && <p className="error-message">{error}</p>}
-
-        <button className="button primary full-width" type="submit" disabled={submitting}>
-          {submitting ? 'Logging in...' : 'Login'}
+        {error && <p className="error">{error}</p>}
+        <button className="btn" type="submit">
+          Login
         </button>
       </form>
-
-      <p className="auth-footer">
+      <p className="muted">
         New here? <Link to="/register">Create an account</Link>
       </p>
     </section>

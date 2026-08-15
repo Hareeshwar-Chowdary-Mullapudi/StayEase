@@ -42,12 +42,38 @@ export const listUsers = async (_req, res, next) => {
   }
 }
 
+export const addAdminByEmail = async (req, res, next) => {
+  try {
+    const email = req.body.email?.trim().toLowerCase()
+    if (!email) {
+      res.status(400)
+      throw new Error('Email is required')
+    }
+
+    const user = await User.findOne({ email })
+    if (!user) {
+      res.status(404)
+      throw new Error('No account with that email. They must register first.')
+    }
+    if (user.role === 'admin') {
+      res.status(400)
+      throw new Error('That account is already an admin')
+    }
+
+    user.role = 'admin'
+    await user.save()
+    res.json({ user: user.toSafeObject() })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const setUserRole = async (req, res, next) => {
   try {
     const { role } = req.body
-    if (!['guest', 'host', 'admin'].includes(role)) {
+    if (!['guest', 'host'].includes(role)) {
       res.status(400)
-      throw new Error('Role must be guest, host, or admin')
+      throw new Error('Add admins by email. You can only remove an admin here.')
     }
 
     const user = await User.findById(req.params.id)
@@ -56,9 +82,14 @@ export const setUserRole = async (req, res, next) => {
       throw new Error('User not found')
     }
 
-    if (user._id.toString() === req.user._id.toString() && role !== 'admin') {
+    if (user._id.toString() === req.user._id.toString()) {
       res.status(400)
       throw new Error('You cannot remove your own admin role')
+    }
+
+    if (user.role !== 'admin') {
+      res.status(400)
+      throw new Error('That account is not an admin')
     }
 
     user.role = role

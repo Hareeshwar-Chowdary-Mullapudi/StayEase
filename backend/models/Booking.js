@@ -6,6 +6,7 @@ const bookingSchema = new mongoose.Schema(
     listingId: { type: mongoose.Schema.Types.ObjectId, ref: 'Listing', required: true },
     checkIn: { type: Date, required: true },
     checkOut: { type: Date, required: true },
+    guests: { type: Number, required: true, min: 1, default: 1 },
     totalPrice: { type: Number, required: true, min: 0 },
     status: {
       type: String,

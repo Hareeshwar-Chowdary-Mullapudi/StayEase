@@ -18,9 +18,8 @@ import { ensureAdminUser } from './controllers/authController.js'
 import { seedListingsIfEmpty } from './utils/seedListings.js'
 import { notFound, errorHandler } from './middleware/errorHandler.js'
 
-dotenv.config()
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+dotenv.config({ path: path.join(__dirname, '.env'), override: true })
 const uploadsDir = path.join(__dirname, 'uploads')
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir)
 

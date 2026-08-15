@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
-import User from './models/User.js'
-import Listing from './models/Listing.js'
+import User from '../models/User.js'
+import Listing from '../models/Listing.js'
 
 export const SEED_LISTINGS = [
   {
@@ -114,8 +114,7 @@ export const SEED_LISTINGS = [
 ]
 
 export const seedListingsIfEmpty = async () => {
-  const count = await Listing.countDocuments()
-  if (count > 0) return
+  await Listing.updateMany({ status: { $exists: false } }, { $set: { status: 'approved' } })
 
   let host = await User.findOne({ email: 'seed.host@stayease.local' })
   if (!host) {
@@ -127,8 +126,13 @@ export const seedListingsIfEmpty = async () => {
     })
   }
 
-  await Listing.insertMany(
-    SEED_LISTINGS.map((item) => ({ ...item, hostId: host._id, status: 'approved' }))
-  )
-  console.log(`Seeded ${SEED_LISTINGS.length} listings`)
+  let added = 0
+  for (const item of SEED_LISTINGS) {
+    const exists = await Listing.findOne({ location: new RegExp(`^${item.location}$`, 'i') })
+    if (exists) continue
+    await Listing.create({ ...item, hostId: host._id, status: 'approved' })
+    added += 1
+  }
+
+  if (added > 0) console.log(`Seeded ${added} listings`)
 }

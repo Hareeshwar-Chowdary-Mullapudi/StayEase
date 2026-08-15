@@ -22,7 +22,7 @@ const hasOverlap = async (listingId, checkIn, checkOut) => {
 
 export const createBooking = async (req, res, next) => {
   try {
-    const { listingId, checkIn, checkOut } = req.body
+    const { listingId, checkIn, checkOut, guests } = req.body
     const start = day(checkIn)
     const end = day(checkOut)
     const today = day(new Date())
@@ -57,6 +57,15 @@ export const createBooking = async (req, res, next) => {
       res.status(400)
       throw new Error('You cannot book your own listing')
     }
+    const guestCount = Number(guests) || 1
+    if (guestCount < 1) {
+      res.status(400)
+      throw new Error('At least 1 guest is required')
+    }
+    if (guestCount > listing.maxGuests) {
+      res.status(400)
+      throw new Error(`This stay allows up to ${listing.maxGuests} guests`)
+    }
     if (await hasOverlap(listingId, start, end)) {
       res.status(400)
       throw new Error('Those dates are already booked')
@@ -67,6 +76,7 @@ export const createBooking = async (req, res, next) => {
       listingId,
       checkIn: start,
       checkOut: end,
+      guests: guestCount,
       totalPrice: nightsBetween(start, end) * listing.pricePerNight,
     })
 

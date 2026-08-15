@@ -44,6 +44,9 @@ const ConfirmStay = () => {
       <p>{booking.listingId?.title}</p>
       <p className="muted">{booking.listingId?.location}</p>
       <p>
+        {booking.guests || 1} guest{(booking.guests || 1) > 1 ? 's' : ''}
+      </p>
+      <p>
         Total <strong>₹{booking.totalPrice}</strong>
       </p>
       {error && <p className="error">{error}</p>}

@@ -1,7 +1,9 @@
 import axios from 'axios'
 
 const raw = (
-  import.meta.env.DEV ? 'http://localhost:5000/api' : import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+  import.meta.env.DEV
+    ? 'http://localhost:5000/api'
+    : import.meta.env.VITE_API_URL || 'https://stayease-3wzi.onrender.com/api'
 ).replace(/\/$/, '')
 const baseURL = raw.endsWith('/api') ? raw : `${raw}/api`
 

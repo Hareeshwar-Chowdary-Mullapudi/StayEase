@@ -29,7 +29,8 @@ const HostBookings = () => {
             <h3>{booking.listingId?.title}</h3>
             <p>Guest: {booking.guestId?.name}</p>
             <p>
-              {new Date(booking.checkIn).toLocaleDateString()} → {new Date(booking.checkOut).toLocaleDateString()}
+              {new Date(booking.checkIn).toLocaleDateString()} → {new Date(booking.checkOut).toLocaleDateString()} ·{' '}
+              {booking.guests || 1} guest{(booking.guests || 1) > 1 ? 's' : ''}
             </p>
             <p>
               ₹{booking.totalPrice} · {booking.status}

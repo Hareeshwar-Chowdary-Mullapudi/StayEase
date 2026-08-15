@@ -34,20 +34,22 @@ const Profile = () => {
           <input value={user?.email || ''} disabled />
         </label>
         {message && <p className="ok">{message}</p>}
-        <button className="btn" type="submit">
+        <button className="btn wide" type="submit">
           Save
         </button>
       </form>
-      <button
-        className="btn light"
-        type="button"
-        onClick={() => {
-          logout()
-          navigate('/login')
-        }}
-      >
-        Logout
-      </button>
+      <div className="profile-logout">
+        <button
+          className="btn light wide"
+          type="button"
+          onClick={() => {
+            logout()
+            navigate('/login')
+          }}
+        >
+          Logout
+        </button>
+      </div>
     </section>
   )
 }

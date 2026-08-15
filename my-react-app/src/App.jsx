@@ -1,7 +1,8 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import { AdminRoute, GuestRoute, HostRoute, ProtectedRoute } from './components/ProtectedRoute'
+import AdminRequests from './pages/AdminRequests'
 import AdminUsers from './pages/AdminUsers'
 import ConfirmStay from './pages/ConfirmStay'
 import Home from './pages/Home'
@@ -45,7 +46,9 @@ const App = () => (
           <Route path="/host/listings/:id/edit" element={<EditListing />} />
         </Route>
         <Route element={<AdminRoute />}>
-          <Route path="/admin" element={<AdminUsers />} />
+          <Route path="/admin" element={<Navigate to="/admin/requests" replace />} />
+          <Route path="/admin/requests" element={<AdminRequests />} />
+          <Route path="/admin/admins" element={<AdminUsers />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

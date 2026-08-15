@@ -30,6 +30,9 @@ const SearchResults = () => {
         </Link>
       </div>
       <SearchBar initialValues={filters} />
+      {listings.length === 0 && (
+        <p className="muted">No stays in {filters.location || 'this search'} yet.</p>
+      )}
       <div className="grid">
         {listings.map((listing) => (
           <ListingCard key={listing._id} listing={listing} />

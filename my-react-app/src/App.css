@@ -68,38 +68,103 @@
   text-align: left;
 }
 
+.places-head {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
 .places h3 {
-  margin: 0 0 12px;
+  margin: 0;
+}
+
+.places-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.places-arrow {
+  background: #f2f2f2;
+  border: 1px solid #e6e6e6;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  height: 32px;
+  line-height: 1;
+  width: 32px;
 }
 
 .places-row {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
 }
 
-.place-card {
+.places-row::-webkit-scrollbar {
+  display: none;
+}
+
+.place-card,
+.place-see-all {
   background: #fff;
   border: 0;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(34, 34, 34, 0.06);
   cursor: pointer;
-  overflow: hidden;
+  flex: 0 0 220px;
   padding: 0;
   text-align: left;
 }
 
-.place-card img {
+.place-photo {
+  position: relative;
+}
+
+.place-photo img {
+  border-radius: 18px;
   display: block;
-  height: 90px;
+  height: 210px;
   object-fit: cover;
   width: 100%;
 }
 
-.place-card span {
+.place-card strong,
+.place-see-all strong {
   display: block;
-  font-weight: 700;
-  padding: 10px;
+  margin-top: 8px;
+}
+
+.place-see-all {
+  align-items: center;
+  border: 1px solid #ebebeb;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  height: 270px;
+  justify-content: center;
+  text-align: center;
+}
+
+.place-stack {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.place-stack img {
+  border: 3px solid #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  height: 72px;
+  margin-left: -28px;
+  object-fit: cover;
+  width: 72px;
+}
+
+.place-stack img:first-child {
+  margin-left: 0;
 }
 
 .hamburger {
@@ -285,11 +350,23 @@ select {
   max-width: 640px;
 }
 
+.profile-logout {
+  border-top: 1px solid #eee8e6;
+  margin-top: 24px;
+  padding-top: 20px;
+}
+
 .panel form,
 .box form,
+form.box,
 .review {
   display: grid;
   gap: 12px;
+}
+
+.admin-add .btn {
+  justify-self: start;
+  margin-top: 4px;
 }
 
 .muted {
@@ -307,9 +384,30 @@ select {
   color: #c0163a;
 }
 
-.ok {
-  background: #eefbf3;
-  color: #0f7a3c;
+.guest-stepper {
+  margin: 12px 0;
+}
+
+.guest-stepper > div {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin: 6px 0;
+}
+
+.guest-stepper button {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+  height: 32px;
+  width: 32px;
+}
+
+.guest-stepper button:disabled {
+  cursor: default;
+  opacity: 0.4;
 }
 
 .row,

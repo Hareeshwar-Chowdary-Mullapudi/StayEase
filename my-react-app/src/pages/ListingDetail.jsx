@@ -14,6 +14,7 @@ const ListingDetail = () => {
   const [averageRating, setAverageRating] = useState(0)
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
+  const [guests, setGuests] = useState(1)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -48,7 +49,7 @@ const ListingDetail = () => {
     setBusy(true)
     setError('')
     try {
-      await api.post('/bookings', { listingId: listing._id, checkIn, checkOut })
+      await api.post('/bookings', { listingId: listing._id, checkIn, checkOut, guests })
       navigate('/trips', { state: { justRequested: true } })
     } catch (err) {
       setError(err.response?.data?.message || 'Unable to book')
@@ -127,6 +128,29 @@ const ListingDetail = () => {
                   required
                 />
               </label>
+              <div className="guest-stepper">
+                <span>Guests</span>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setGuests((n) => Math.max(1, n - 1))}
+                    disabled={guests <= 1}
+                    aria-label="Fewer guests"
+                  >
+                    −
+                  </button>
+                  <strong>{guests}</strong>
+                  <button
+                    type="button"
+                    onClick={() => setGuests((n) => Math.min(listing.maxGuests, n + 1))}
+                    disabled={guests >= listing.maxGuests}
+                    aria-label="More guests"
+                  >
+                    +
+                  </button>
+                </div>
+                <p className="muted">Max {listing.maxGuests}</p>
+              </div>
               {nights > 0 && (
                 <p>
                   {nights} night{nights > 1 ? 's' : ''} · ₹{nights * listing.pricePerNight}

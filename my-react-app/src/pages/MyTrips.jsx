@@ -44,7 +44,8 @@ const MyTrips = () => {
             <h3>{booking.listingId?.title}</h3>
             <p className="muted">{booking.listingId?.location}</p>
             <p>
-              {format(booking.checkIn)} → {format(booking.checkOut)}
+              {format(booking.checkIn)} → {format(booking.checkOut)} · {booking.guests || 1} guest
+              {(booking.guests || 1) > 1 ? 's' : ''}
             </p>
             <p>
               <strong>₹{booking.totalPrice}</strong> · {booking.status}

@@ -1,10 +1,31 @@
 # StayEase
 
-StayEase is a simple Airbnb-style web app for finding and booking stays in India.
+StayEase is a simple Airbnb-style app for stays in India. Built to be easy to demo in an interview.
 
-Guests can search listings, pick dates, request a booking, and pay with Stripe. Hosts can list a place, edit it, decline a request, and mark a stay as completed. After a completed stay, the guest can leave a 1–5 star review.
+Guests search and book. Hosts list places (admin must approve). Guests pay with Stripe Checkout. After a completed stay, the guest can leave a review.
 
-One account can both book stays and host listings.
+## Roles
+
+| Role | What they see |
+|------|----------------|
+| **Guest** | Search, listing detail, book, My trips, pay, profile. Top right: **Become host**. |
+| **Host** | Host dashboard, host bookings, create/edit listing, profile. Top right: **Become guest**. |
+| **Admin** | Guest + host pages, plus listing requests and admins. Cannot switch role. |
+
+Register as Guest or Host. The email in `ADMIN_EMAIL` becomes admin on login.
+
+New listings are **pending** until an admin **approves** or **declines**. Guests only see **approved** stays.
+
+Admins add other admins **by email** (that person must already have an account). They can also remove an admin.
+
+## What you get on Home
+
+- Search by location, guests, min/max price
+- Famous places in India (slider). Click a city to search it. **See all** opens every city, not the homes.
+- Available stays grouped **by city** in medium cards you can slide
+- Seed data: several stays per city (Goa, Manali, Jaipur, and others), with different cover photos
+
+When booking, pick dates and **Guests** (minimum 1, up to the listing max).
 
 ## Tech stack
 
@@ -15,40 +36,36 @@ One account can both book stays and host listings.
 | Database | MongoDB + Mongoose |
 | Auth | JWT |
 | Payments | Stripe Checkout (test mode) |
-| Photos | Local upload to `backend/uploads` |
+| Photos | Upload to `backend/uploads`, plus image URLs |
 
 ## Project structure
 
 ```text
 Airbnb/
-├── backend/          API server (port 5000)
-├── my-react-app/     React UI (port 5173)
+├── backend/          API (port 5000)
+├── my-react-app/     UI (port 5173)
 └── README.md
 ```
-
-## What you need
-
-- Node.js
-- MongoDB running locally (default URI: `mongodb://localhost:27017/airbnb`)
-- A Stripe **test** secret key (`sk_test_...`) from [Stripe Dashboard → API keys](https://dashboard.stripe.com/test/apikeys)
 
 ## Setup
 
 ### 1. Backend env
 
-Copy `backend/.env.example` to `backend/.env` and fill in your values:
+Copy `backend/.env.example` to `backend/.env`:
 
 ```env
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/airbnb
 JWT_SECRET=change_this_to_a_long_random_string
 FRONTEND_URL=http://localhost:5173
+BACKEND_URL=http://localhost:5000
 STRIPE_SECRET_KEY=sk_test_your_key_here
 STRIPE_WEBHOOK_SECRET=
 STRIPE_CURRENCY=inr
+ADMIN_EMAIL=you@example.com
 ```
 
-Never commit `.env`. Never use live keys (`sk_live_`).
+Use Atlas if you want: put `/airbnb` in the URI before `?`. Never commit `.env`. Never use `sk_live_`.
 
 ### 2. Frontend env
 
@@ -58,11 +75,9 @@ Copy `my-react-app/.env.example` to `my-react-app/.env`:
 VITE_API_URL=http://localhost:5000/api
 ```
 
-### 3. Install and run
+On **Vercel**, set `VITE_API_URL` to your Render API **including `/api`**, then redeploy.
 
-Open two terminals.
-
-**API**
+### 3. Run
 
 ```bash
 cd backend
@@ -70,7 +85,7 @@ npm install
 npm run dev
 ```
 
-On Windows, if `npm install` fails with `UNABLE_TO_VERIFY_LEAF_SIGNATURE`:
+Windows SSL install issues:
 
 ```powershell
 $env:NODE_OPTIONS='--use-system-ca'
@@ -78,9 +93,7 @@ npm install
 npm run dev
 ```
 
-You should see MongoDB connected and `Server running on port 5000`.
-
-**UI**
+You should see MongoDB connected, any new seed listings, and `Server running on port 5000`.
 
 ```bash
 cd my-react-app
@@ -88,22 +101,19 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173).
+Open [http://localhost:5173](http://localhost:5173). Restart the API after you change `.env`.
 
-Restart the backend after you change `.env` (nodemon does not always reload env files).
+## Demo flow
 
-## How to use the app
+1. Register / login.
+2. Search a city, or click a famous place, then open a listing.
+3. Dates + guests → **Request to book**.
+4. **My trips** → **Confirm to proceed** → Stripe test card `4242 4242 4242 4242`.
+5. **Become host** → create a listing (pending). Admin **Listing requests** approve/decline.
+6. Host dashboard to edit; host bookings to decline or **Mark completed**.
+7. Guest reviews 1–5 on My trips after **completed**.
 
-1. **Register** a new account, then **login**.
-2. On Home, search by location, guests, or price, and open a listing.
-3. Choose check-in and check-out, then **Request to book**.
-4. Go to **My trips** → **Confirm to proceed**. You are sent to Stripe.
-5. Pay with a test card: `4242 4242 4242 4242`, any future expiry, any CVC, any ZIP.
-6. After payment the booking becomes **confirmed**.
-7. As a host, open **Host dashboard** to create or edit a listing, and **Host bookings** to decline a pending stay or **Mark completed**.
-8. When a stay is **completed**, the guest can rate it 1–5 stars and write a review on My trips. Reviews show on the listing page.
-
-The menu (three lines, top right) has Profile, My trips, Host dashboard, Create listing, and Logout.
+Menu (top right): profile, trips or host pages, admin pages if admin, logout.
 
 ## API overview
 
@@ -111,14 +121,16 @@ The menu (three lines, top right) has Profile, My trips, Host dashboard, Create 
 |------|----------|
 | Health | `GET /api/health` |
 | Auth | `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me` |
-| Listings | `GET /api/listings`, `GET /api/listings/:id`, `POST/PUT/DELETE` (owner) |
+| Users | `PUT /api/users/profile`, `PATCH /api/users/role`, `POST /api/users/admin` |
+| Listings | `GET /api/listings` (approved), `GET /mine`, `GET /pending`, `PATCH /:id/review` |
 | Bookings | `POST /api/bookings`, `GET /api/bookings/my`, `GET /api/bookings/host` |
 | Payments | `POST /api/payments/create-checkout`, `POST /api/payments/confirm` |
 | Reviews | `POST /api/reviews`, `GET /api/reviews/listing/:id` |
 | Upload | `POST /api/upload` |
 
-## Notes for GitHub
+## GitHub / deploy
 
-- `.env` files are gitignored. Share only `.env.example`.
-- If Stripe rejects INR on your account, set `STRIPE_CURRENCY=usd` in `backend/.env`.
-- Stripe webhooks are optional. Local payment confirmation uses the success page (`/payments/confirm`).
+- `.env` is gitignored. Share only `.env.example`.
+- If Stripe rejects INR, set `STRIPE_CURRENCY=usd`.
+- Webhooks are optional. Local confirm uses `/payments/confirm` after Stripe redirect.
+- Frontend: Vercel. Backend: Render. Same MongoDB for both if `MONGO_URI` matches.

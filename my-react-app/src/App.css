@@ -136,6 +136,33 @@
   margin-top: 8px;
 }
 
+.place-spot {
+  color: #717171;
+  display: block;
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.stay-row {
+  margin-bottom: 28px;
+}
+
+.stay-scroll .card {
+  flex: 0 0 180px;
+}
+
+.card-medium .card-body {
+  padding: 10px;
+}
+
+.card-medium h3 {
+  font-size: 0.95rem;
+}
+
+.card-medium img {
+  aspect-ratio: 1 / 1;
+}
+
 .place-see-all {
   align-items: center;
   border: 1px solid #ebebeb;
@@ -163,8 +190,14 @@
   width: 72px;
 }
 
-.place-stack img:first-child {
-  margin-left: 0;
+.places-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.places-grid .place-card {
+  flex: none;
 }
 
 .hamburger {
@@ -297,8 +330,8 @@ select {
 
 .grid {
   display: grid;
-  gap: 18px;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
 }
 
 .card {

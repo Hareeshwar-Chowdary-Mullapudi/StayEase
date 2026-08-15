@@ -15,6 +15,7 @@ import MyTrips from './pages/MyTrips'
 import NotFound from './pages/NotFound'
 import PaymentCancel from './pages/PaymentCancel'
 import PaymentSuccess from './pages/PaymentSuccess'
+import Places from './pages/Places'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
 import SearchResults from './pages/SearchResults'
@@ -30,6 +31,7 @@ const App = () => (
         <Route path="/register" element={<Register />} />
         <Route path="/listings/:id" element={<ListingDetail />} />
         <Route path="/search" element={<SearchResults />} />
+        <Route path="/places" element={<Places />} />
         <Route path="/payments/success" element={<PaymentSuccess />} />
         <Route path="/payments/cancel" element={<PaymentCancel />} />
         <Route element={<ProtectedRoute />}>

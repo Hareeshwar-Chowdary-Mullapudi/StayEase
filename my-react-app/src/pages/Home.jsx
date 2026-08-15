@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api/client'
 import FamousPlaces from '../components/FamousPlaces'
-import ListingCard from '../components/ListingCard'
 import SearchBar from '../components/SearchBar'
+import StayRow from '../components/StayRow'
 import { useAuth } from '../context/AuthContext.jsx'
 
 const Home = () => {
@@ -17,6 +17,16 @@ const Home = () => {
       .then(({ data }) => setListings(data.listings || []))
       .catch((err) => setError(err.response?.data?.message || 'Unable to load listings'))
   }, [])
+
+  const byLocation = useMemo(() => {
+    const groups = {}
+    listings.forEach((listing) => {
+      const key = listing.location || 'Other'
+      if (!groups[key]) groups[key] = []
+      groups[key].push(listing)
+    })
+    return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b))
+  }, [listings])
 
   return (
     <div>
@@ -39,11 +49,9 @@ const Home = () => {
         </div>
         {error && <p className="error">{error}</p>}
         {!error && listings.length === 0 && <p className="muted">No listings yet.</p>}
-        <div className="grid">
-          {listings.map((listing) => (
-            <ListingCard key={listing._id} listing={listing} />
-          ))}
-        </div>
+        {byLocation.map(([location, items]) => (
+          <StayRow key={location} title={location} listings={items} />
+        ))}
       </section>
     </div>
   )

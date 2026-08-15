@@ -35,7 +35,7 @@ const SearchResults = () => {
       )}
       <div className="grid">
         {listings.map((listing) => (
-          <ListingCard key={listing._id} listing={listing} />
+          <ListingCard key={listing._id} listing={listing} size="medium" />
         ))}
       </div>
     </section>

@@ -9,12 +9,8 @@ const HostDashboard = () => {
   const [bookings, setBookings] = useState([])
 
   useEffect(() => {
-    Promise.all([api.get('/listings'), api.get('/bookings/host')]).then(([listRes, bookRes]) => {
-      const mine = (listRes.data.listings || []).filter((listing) => {
-        const hostId = listing.hostId?._id || listing.hostId
-        return String(hostId) === String(user._id)
-      })
-      setListings(mine)
+    Promise.all([api.get('/listings/mine'), api.get('/bookings/host')]).then(([listRes, bookRes]) => {
+      setListings(listRes.data.listings || [])
       setBookings(bookRes.data.bookings || [])
     })
   }, [user])
@@ -46,7 +42,9 @@ const HostDashboard = () => {
         <article key={listing._id} className="box row">
           <div>
             <h3>{listing.title}</h3>
-            <p className="muted">{listing.location}</p>
+            <p className="muted">
+              {listing.location} · {listing.status}
+            </p>
           </div>
           <div className="actions">
             <Link className="btn light" to={`/listings/${listing._id}`}>

@@ -25,3 +25,19 @@ export const protect = async (req, res, next) => {
     next(error)
   }
 }
+
+export const hostOnly = (req, res, next) => {
+  if (req.user?.role !== 'host' && req.user?.role !== 'admin') {
+    res.status(403)
+    return next(new Error('Host access only'))
+  }
+  next()
+}
+
+export const adminOnly = (req, res, next) => {
+  if (req.user?.role !== 'admin') {
+    res.status(403)
+    return next(new Error('Admin access only'))
+  }
+  next()
+}

@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 const Register = () => {
   const { register } = useAuth()
   const navigate = useNavigate()
-  const [form, setForm] = useState({ name: '', email: '', password: '' })
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'guest' })
   const [error, setError] = useState('')
 
   const onSubmit = async (event) => {
@@ -34,6 +34,13 @@ const Register = () => {
         <label>
           Password
           <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+        </label>
+        <label>
+          I am a
+          <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
+            <option value="guest">Guest</option>
+            <option value="host">Host</option>
+          </select>
         </label>
         {error && <p className="error">{error}</p>}
         <button className="btn" type="submit">

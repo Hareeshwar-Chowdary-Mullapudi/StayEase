@@ -45,6 +45,14 @@ export const createBooking = async (req, res, next) => {
       res.status(404)
       throw new Error('Listing not found')
     }
+    if (listing.status !== 'approved') {
+      res.status(400)
+      throw new Error('This listing is not available yet')
+    }
+    if (req.user.role === 'host') {
+      res.status(403)
+      throw new Error('Switch to guest to book a stay')
+    }
     if (listing.hostId.toString() === req.user._id.toString()) {
       res.status(400)
       throw new Error('You cannot book your own listing')

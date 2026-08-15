@@ -69,7 +69,7 @@ const ListingForm = ({ mode }) => {
         mode === 'create'
           ? await api.post('/listings', payload)
           : await api.put(`/listings/${id}`, payload)
-      navigate(`/listings/${data.listing._id}`)
+      navigate(mode === 'create' ? '/host/dashboard' : `/listings/${data.listing._id}`)
     } catch (err) {
       setError(err.response?.data?.message || 'Unable to save listing')
     }
@@ -79,7 +79,8 @@ const ListingForm = ({ mode }) => {
 
   return (
     <section className="panel wide">
-      <h1>{mode === 'create' ? 'Create listing' : 'Edit listing'}</h1>
+      <h1>{mode === 'create' ? 'Request a listing' : 'Edit listing'}</h1>
+      {mode === 'create' && <p className="muted">Admin will approve or decline before guests can see it.</p>}
       <form onSubmit={onSubmit}>
         <label>
           Title

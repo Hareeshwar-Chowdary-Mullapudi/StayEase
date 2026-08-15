@@ -76,7 +76,7 @@ const ListingDetail = () => {
             Hosted by {listing.hostId?.name || 'Host'} · {listing.maxGuests} guests
             {reviews.length > 0 ? ` · ★ ${averageRating}` : ''}
           </p>
-          {isOwner && (
+          {isOwner && (user.role === 'host' || user.role === 'admin') && (
             <Link className="btn light" to={`/host/listings/${listing._id}/edit`}>
               Edit listing
             </Link>
@@ -106,7 +106,11 @@ const ListingDetail = () => {
             <strong>₹{listing.pricePerNight}</strong> / night
           </p>
           {isOwner ? (
-            <p className="muted">This is your listing.</p>
+            <p className="muted">This is your listing{listing.status !== 'approved' ? ` (${listing.status})` : ''}.</p>
+          ) : user?.role === 'host' ? (
+            <p className="muted">Switch to guest to request a booking.</p>
+          ) : listing.status !== 'approved' ? (
+            <p className="muted">Waiting for admin approval.</p>
           ) : (
             <form onSubmit={book}>
               <label>

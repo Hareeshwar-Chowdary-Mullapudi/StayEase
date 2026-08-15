@@ -47,6 +47,61 @@
   color: #ff385c;
 }
 
+.role-chip {
+  background: #fff;
+  border: 1px solid #eee8e6;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 14px;
+}
+
+.role-chip.admin {
+  color: #ff385c;
+  cursor: default;
+}
+
+.places {
+  margin: 28px auto 0;
+  max-width: 1100px;
+  text-align: left;
+}
+
+.places h3 {
+  margin: 0 0 12px;
+}
+
+.places-row {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+}
+
+.place-card {
+  background: #fff;
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(34, 34, 34, 0.06);
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+  text-align: left;
+}
+
+.place-card img {
+  display: block;
+  height: 90px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.place-card span {
+  display: block;
+  font-weight: 700;
+  padding: 10px;
+}
+
 .hamburger {
   background: #ff385c;
   border: 0;

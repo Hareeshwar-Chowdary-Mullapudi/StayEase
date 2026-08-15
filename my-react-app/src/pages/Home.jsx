@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api/client'
+import FamousPlaces from '../components/FamousPlaces'
 import ListingCard from '../components/ListingCard'
 import SearchBar from '../components/SearchBar'
 import { useAuth } from '../context/AuthContext.jsx'
@@ -24,12 +25,13 @@ const Home = () => {
         <h1>Find your next stay</h1>
         <p className="muted">Search homes, pick dates, and confirm with Stripe.</p>
         <SearchBar />
+        <FamousPlaces />
       </section>
 
       <section className="page">
         <div className="row">
           <h2>Available stays</h2>
-          {user && (
+          {(user?.role === 'host' || user?.role === 'admin') && (
             <Link className="btn light" to="/host/listings/new">
               Host your place
             </Link>

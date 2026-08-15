@@ -10,6 +10,7 @@ const listingSchema = new mongoose.Schema(
     images: { type: [String], default: [] },
     amenities: { type: [String], default: [] },
     maxGuests: { type: Number, required: true, min: 1 },
+    status: { type: String, enum: ['pending', 'approved', 'declined'], default: 'pending' },
   },
   { timestamps: true }
 )

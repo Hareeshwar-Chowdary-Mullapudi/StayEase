@@ -5,14 +5,17 @@ import { useAuth } from '../context/AuthContext.jsx'
 const AdminUsers = () => {
   const { user: me } = useAuth()
   const [users, setUsers] = useState([])
+  const [requests, setRequests] = useState([])
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
 
   const load = () => {
-    api
-      .get('/users')
-      .then(({ data }) => setUsers(data.users || []))
-      .catch((err) => setError(err.response?.data?.message || 'Unable to load users'))
+    Promise.all([api.get('/users'), api.get('/listings/pending')])
+      .then(([userRes, listRes]) => {
+        setUsers(userRes.data.users || [])
+        setRequests(listRes.data.listings || [])
+      })
+      .catch((err) => setError(err.response?.data?.message || 'Unable to load admin data'))
   }
 
   useEffect(() => {
@@ -24,21 +27,53 @@ const AdminUsers = () => {
     setMessage('')
     try {
       const { data } = await api.patch(`/users/${id}/role`, { role })
-      setUsers((current) =>
-        current.map((user) => (user._id === id ? data.user : user))
-      )
+      setUsers((current) => current.map((user) => (user._id === id ? data.user : user)))
       setMessage(`${data.user.email} is now ${data.user.role}.`)
     } catch (err) {
       setError(err.response?.data?.message || 'Unable to update role')
     }
   }
 
+  const review = async (id, status) => {
+    setError('')
+    setMessage('')
+    try {
+      const { data } = await api.patch(`/listings/${id}/review`, { status })
+      setRequests((current) => current.filter((item) => item._id !== id))
+      setMessage(`${data.listing.title} ${status}.`)
+    } catch (err) {
+      setError(err.response?.data?.message || 'Unable to review listing')
+    }
+  }
+
   return (
     <section className="page">
       <h2>Admin</h2>
-      <p className="muted">Make other accounts admin. You stay guest/host as well.</p>
       {message && <p className="ok">{message}</p>}
       {error && <p className="error">{error}</p>}
+
+      <h3>Host listing requests</h3>
+      {requests.length === 0 && <p className="muted">No pending requests.</p>}
+      {requests.map((listing) => (
+        <article key={listing._id} className="box row">
+          <div>
+            <h3>{listing.title}</h3>
+            <p className="muted">
+              {listing.location} · {listing.hostId?.name} · ₹{listing.pricePerNight}
+            </p>
+          </div>
+          <div className="actions">
+            <button className="btn" type="button" onClick={() => review(listing._id, 'approved')}>
+              Approve
+            </button>
+            <button className="btn light" type="button" onClick={() => review(listing._id, 'declined')}>
+              Decline
+            </button>
+          </div>
+        </article>
+      ))}
+
+      <h3>Users</h3>
       {users.map((user) => (
         <article key={user._id} className="box row">
           <div>

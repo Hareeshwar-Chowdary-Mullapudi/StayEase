@@ -14,6 +14,8 @@ import reviewRoutes from './routes/reviews.js'
 import uploadRoutes from './routes/upload.js'
 import userRoutes from './routes/users.js'
 import { stripeWebhook } from './controllers/paymentController.js'
+import { ensureAdminUser } from './controllers/authController.js'
+import { seedListingsIfEmpty } from './utils/seedListings.js'
 import { notFound, errorHandler } from './middleware/errorHandler.js'
 
 dotenv.config()
@@ -27,6 +29,8 @@ const PORT = process.env.PORT || 5000
 app.set('trust proxy', 1)
 
 await connectDB()
+await ensureAdminUser()
+await seedListingsIfEmpty()
 
 app.use(cors())
 app.use(morgan('dev'))

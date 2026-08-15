@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
-import { AdminRoute, ProtectedRoute } from './components/ProtectedRoute'
+import { AdminRoute, GuestRoute, HostRoute, ProtectedRoute } from './components/ProtectedRoute'
 import AdminUsers from './pages/AdminUsers'
 import ConfirmStay from './pages/ConfirmStay'
 import Home from './pages/Home'
@@ -32,17 +32,21 @@ const App = () => (
         <Route path="/payments/success" element={<PaymentSuccess />} />
         <Route path="/payments/cancel" element={<PaymentCancel />} />
         <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+        <Route element={<GuestRoute />}>
           <Route path="/trips" element={<MyTrips />} />
           <Route path="/confirm/:bookingId" element={<ConfirmStay />} />
-          <Route path="/profile" element={<Profile />} />
+        </Route>
+        <Route element={<HostRoute />}>
           <Route path="/host/dashboard" element={<HostDashboard />} />
           <Route path="/host/bookings" element={<HostBookings />} />
           <Route path="/host/listings/new" element={<CreateListing />} />
-            <Route path="/host/listings/:id/edit" element={<EditListing />} />
-          </Route>
-          <Route element={<AdminRoute />}>
-            <Route path="/admin" element={<AdminUsers />} />
-          </Route>
+          <Route path="/host/listings/:id/edit" element={<EditListing />} />
+        </Route>
+        <Route element={<AdminRoute />}>
+          <Route path="/admin" element={<AdminUsers />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </main>

@@ -39,6 +39,11 @@ export const AuthProvider = ({ children }) => {
         setUser(null)
       },
       updateUser: (next) => setUser(next),
+      switchRole: async (role) => {
+        const { data } = await api.patch('/users/role', { role })
+        setUser(data.user)
+        return data.user
+      },
     }),
     [user, loading]
   )
